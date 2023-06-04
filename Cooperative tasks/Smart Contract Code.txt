@@ -1,0 +1,59 @@
+//SPDX-License-Identifier: GPL-3.0
+//ROBOT CARE
+pragma solidity ^0.8.0;
+
+//Start of the contract
+contract SafeContract {
+    uint public finalProductCount;
+    uint public outputCount;
+    uint public lastOutputTime;
+    uint public count;
+    uint public lastCountTime;
+    uint public lastLubricationTime;
+    
+    constructor(uint _finalProductCount) {
+        require(_finalProductCount % 10 == 0, "Final product count must be a multiple of 10.");
+        finalProductCount = _finalProductCount;
+        outputCount = _finalProductCount / 10 - 1;
+        lastOutputTime = block.timestamp;
+        count = 0;
+        lastCountTime = block.timestamp;
+    }
+    
+    function checkOutput() public returns (string memory) {
+        uint currentTime = block.timestamp;
+        uint elapsedTime = currentTime - lastOutputTime;
+        
+        if (elapsedTime >= 10 && outputCount > 0) {
+            outputCount--;
+            lastOutputTime = currentTime;
+            return "Products required to Robot Area";
+        } else {
+            return "  ";
+        }
+    }
+    
+    function getCount() public returns (uint) {
+        uint currentTime = block.timestamp;
+        uint elapsedTime = currentTime - lastCountTime;
+        
+        if (elapsedTime >= 5) {
+            count += 1;
+            lastCountTime = currentTime;
+        }
+        
+        return count;
+    }
+
+    function checkLubrication() public returns (string memory) {
+        uint currentTime = block.timestamp;
+        uint elapsedTime = currentTime - lastLubricationTime;
+    
+        if (elapsedTime >= 20) {
+            lastLubricationTime = currentTime;
+            return "Remind to lubricate the joints";
+        } else {
+            return "None";
+        }
+    }
+}
